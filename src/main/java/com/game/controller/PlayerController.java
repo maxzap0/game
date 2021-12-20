@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,13 +29,36 @@ public class PlayerController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Race race,
-            @RequestParam(required = false) Profession profession
+            @RequestParam(required = false) Profession profession,
+            @RequestParam(required = false) Long after,
+            @RequestParam(required = false) Long before,
+            @RequestParam(required = false) Boolean banned,
+            @RequestParam(required = false) Integer minExperience,
+            @RequestParam(required = false) Integer maxExperience,
+            @RequestParam(required = false) Integer minLevel,
+            @RequestParam(required = false) Integer maxLevel,
+            @RequestParam(required = false) PlayerOrder playerOrder,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "3") Integer pageSize
     ){
         List<Player> playerList = playerService.getAllPlayer();
 
-        if(name!=null) {
-            playerList = playerList.stream().filter(p->p.getName().contains(name)).collect(Collectors.toList());
-        }
+        playerList = playerList.stream()
+                .filter(player -> name==null||player.getName().contains(name))
+                .filter(player -> title==null||player.getTitle().contains(title))
+                .filter(player -> race==null||player.getRace()==race)
+                .filter(player -> profession==null||player.getProfession()==profession)
+                .filter(player -> after==null||player.getBirthday().getTime()>=after)
+                .filter(player -> before==null||player.getBirthday().getTime()<=before)
+                .filter(player -> banned==null||player.getBanned()==banned)
+                .filter(player -> minExperience==null||player.getExperience()>=minExperience)
+                .filter(player -> maxExperience==null||player.getExperience()<=maxExperience)
+                .filter(player -> minLevel==null||player.getLevel()>=minLevel)
+                .filter(player -> maxLevel==null||player.getLevel()<=maxLevel)
+                .skip((long) pageNumber * pageSize)
+                .limit(pageSize)
+                .collect(Collectors.toList());
+
         return new ResponseEntity<>(playerList, HttpStatus.OK);
     }
 
