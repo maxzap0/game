@@ -17,9 +17,11 @@ public class Player {
     @Column(name = "title")
     private String title;
     @Column(name = "race")
-    private String race;
+    @Enumerated(EnumType.STRING)
+    private Race race;
     @Column(name = "profession")
-    private String profession;
+    @Enumerated(EnumType.STRING)
+    private Profession profession;
     @Column(name = "experience")
     private Integer experience;
     @Column(name = "level")
@@ -34,7 +36,7 @@ public class Player {
     public Player() {
     }
 
-    public Player(String name, String title, String race, String profession, Integer experience, Integer level, Integer untilNextLevel, Date birthday, Boolean banned) {
+    public Player(String name, String title, Race race, Profession profession, Integer experience, Integer level, Integer untilNextLevel, Date birthday, Boolean banned) {
         this.name = name;
         this.title = title;
         this.race = race;
@@ -70,19 +72,19 @@ public class Player {
         this.title = title;
     }
 
-    public String getRace() {
+    public Race getRace() {
         return race;
     }
 
-    public void setRace(String race) {
+    public void setRace(Race race) {
         this.race = race;
     }
 
-    public String getProfession() {
+    public Profession getProfession() {
         return profession;
     }
 
-    public void setProfession(String profession) {
+    public void setProfession(Profession profession) {
         this.profession = profession;
     }
 

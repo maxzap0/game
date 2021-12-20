@@ -2,7 +2,6 @@ package com.game.service;
 
 import com.game.entity.Player;
 import com.game.repository.PlayerRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

@@ -1,12 +1,15 @@
 package com.game.controller;
 
 import com.game.entity.Player;
+import com.game.entity.Profession;
+import com.game.entity.Race;
 import com.game.service.PlayerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rest/players")
@@ -19,8 +22,17 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Player>> showAllPlayer(){
+    public ResponseEntity<List<Player>> getAllPlayer(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Race race,
+            @RequestParam(required = false) Profession profession
+    ){
         List<Player> playerList = playerService.getAllPlayer();
+
+        if(name!=null) {
+            playerList = playerList.stream().filter(p->p.getName().contains(name)).collect(Collectors.toList());
+        }
         return new ResponseEntity<>(playerList, HttpStatus.OK);
     }
 
