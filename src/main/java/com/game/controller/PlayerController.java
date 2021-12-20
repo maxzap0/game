@@ -4,10 +4,7 @@ import com.game.entity.Player;
 import com.game.service.PlayerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,6 +32,9 @@ public class PlayerController {
         if (id<=0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        if (!playerService.exists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Player player = playerService.getPlayerById(id);
         return new ResponseEntity<>(player, HttpStatus.OK);
     }
@@ -44,5 +44,20 @@ public class PlayerController {
         Integer count;
         count = playerService.getCount();
         return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deletePlayer(@PathVariable Long id){
+        if (id<=0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (id>playerService.getCount()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (!playerService.exists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        playerService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
