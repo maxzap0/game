@@ -1,25 +1,57 @@
 package com.game.entity;
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Component
 @Entity
 @Table(name = "player")
 public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "title")
     private String title;
-    private Race race;
-    private Profession profession;
+    @Column(name = "race")
+    private String race;
+    @Column(name = "profession")
+    private String profession;
+    @Column(name = "experience")
     private Integer experience;
+    @Column(name = "level")
     private Integer level;
+    @Column(name = "untilNextLevel")
     private Integer untilNextLevel;
+    @Column(name = "birthday")
     private Date birthday;
+    @Column(name = "banned")
     private Boolean banned;
 
     public Player() {
+    }
+
+    public Player(String name, String title, String race, String profession, Integer experience, Integer level, Integer untilNextLevel, Date birthday, Boolean banned) {
+        this.name = name;
+        this.title = title;
+        this.race = race;
+        this.profession = profession;
+        this.experience = experience;
+        this.level = level;
+        this.untilNextLevel = untilNextLevel;
+        this.birthday = birthday;
+        this.banned = banned;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -38,19 +70,19 @@ public class Player {
         this.title = title;
     }
 
-    public Race getRace() {
+    public String getRace() {
         return race;
     }
 
-    public void setRace(Race race) {
+    public void setRace(String race) {
         this.race = race;
     }
 
-    public Profession getProfession() {
+    public String getProfession() {
         return profession;
     }
 
-    public void setProfession(Profession profession) {
+    public void setProfession(String profession) {
         this.profession = profession;
     }
 
@@ -92,5 +124,21 @@ public class Player {
 
     public void setBanned(Boolean banned) {
         this.banned = banned;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", race='" + race + '\'' +
+                ", profession='" + profession + '\'' +
+                ", experience=" + experience +
+                ", level=" + level +
+                ", untilNextLevel=" + untilNextLevel +
+                ", birthday=" + birthday +
+                ", banned=" + banned +
+                '}';
     }
 }
