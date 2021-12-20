@@ -2,6 +2,7 @@ package com.game.service;
 
 import com.game.entity.Player;
 import com.game.repository.PlayerRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,7 +23,7 @@ public class PlayerService {
     }
 
     @Transactional
-    public Player getPalyerById(Long id) {
+    public Player getPlayerById(Long id) {
         return playerRepository.findById(id).get();
     }
 
@@ -34,5 +35,12 @@ public class PlayerService {
     @Transactional
     public void deleteById(Long id) {
         playerRepository.deleteById(id);
+    }
+
+
+    @Transactional
+    public Integer getCount() {
+        return playerRepository.getCount();
+        //return 40;
     }
 }

@@ -2,7 +2,6 @@ package com.game.controller;
 
 import com.game.entity.Player;
 import com.game.service.PlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,16 +29,20 @@ public class PlayerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id){
-        System.out.println("getlayer"+id);
-        Player player;
-        player = playerService.getPalyerById(1L);
-        System.out.println(player);
-        try {
-            player = playerService.getPalyerById(id);
-            //System.out.println(player);
-            return new ResponseEntity<>(player, HttpStatus.OK);
-        } catch (Exception e) {
+        if (id>playerService.getCount()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (id<=0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        Player player = playerService.getPlayerById(id);
+        return new ResponseEntity<>(player, HttpStatus.OK);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getCount(){
+        Integer count;
+        count = playerService.getCount();
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 }
