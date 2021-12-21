@@ -5,7 +5,7 @@ import com.game.entity.Player;
 import com.game.entity.Profession;
 import com.game.entity.Race;
 import com.game.service.PlayerService;
-import com.game.validate.PlayerValid;
+import com.game.validate.PlayerValidCreate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,9 +68,6 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id){
 
-        if (id>playerService.getCount()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         if (id<=0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -116,7 +113,7 @@ public class PlayerController {
     public ResponseEntity<Player> createPlayer(
             @RequestBody Player player) {
 
-        if (!PlayerValid.validCreatePlayer(player)) {
+        if (!PlayerValidCreate.validCreatePlayer(player)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (!player.getBanned()) {
@@ -128,14 +125,62 @@ public class PlayerController {
         return new ResponseEntity<>(player, HttpStatus.OK);
     }
 
+    @PostMapping("/{id}")
+    public ResponseEntity<Player> updatePlayer(
+            @RequestBody Player player,
+            @PathVariable Long id
+    ) {
+        if (id<=0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (!playerService.exists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        /*if (player==null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }*/
+
+        if (!PlayerValidCreate.validUpdatePlayer(player)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Player playerFromBase = playerService.getPlayerById(id);
+
+        if (player.getName()!=null){
+            playerFromBase.setName(player.getName());
+        }
+        if (player.getTitle()!=null){
+            playerFromBase.setTitle(player.getTitle());
+        }
+        if (player.getRace()!=null){
+            playerFromBase.setRace(player.getRace());
+        }
+        if (player.getProfession()!=null){
+            playerFromBase.setProfession(player.getProfession());
+        }
+        if (player.getBirthday()!=null){
+            playerFromBase.setBirthday(player.getBirthday());
+        }
+        if (player.getExperience()!=null){
+            playerFromBase.setExperience(player.getExperience());
+            playerFromBase.setLevel(((int) (Math.sqrt((2500+(200*player.getExperience())))) - 50) / 100);
+            playerFromBase.setUntilNextLevel(50 * (playerFromBase.getLevel()+1)*(playerFromBase.getLevel()+2) - playerFromBase.getExperience());
+        }
+        if (player.getBanned()!=null){
+            playerFromBase.setBanned(player.getBanned());
+        }
+
+        playerService.savePlayer(playerFromBase);
+
+        return new ResponseEntity<>(playerFromBase, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deletePlayer(@PathVariable Long id){
         if (id<=0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (id>playerService.getCount()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
         if (!playerService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -36,10 +36,10 @@ public class PlayerService {
         playerRepository.deleteById(id);
     }
 
-    @Transactional
+    /*@Transactional
     public Integer getCount() {
         return (int) playerRepository.count();
-    }
+    }*/
 
     @Transactional
     public Boolean exists(Long id) {
