@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import com.game.comporator.PlayerComparator;
 import com.game.entity.Player;
 import com.game.entity.Profession;
 import com.game.entity.Race;
@@ -37,13 +38,18 @@ public class PlayerController {
             @RequestParam(required = false) Integer maxExperience,
             @RequestParam(required = false) Integer minLevel,
             @RequestParam(required = false) Integer maxLevel,
-            @RequestParam(required = false) PlayerOrder playerOrder,
+            @RequestParam(required = false) PlayerOrder order,
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "3") Integer pageSize
     ){
+        if (order==null) order = PlayerOrder.ID;
         List<Player> playerList = playerService.getAllPlayer();
-
         playerList = playerList.stream()
+                .sorted( new PlayerComparator(order.getFieldName()){
+                            @Override
+                            public int compare(Player o1, Player o2) {
+                                return super.compare(o1, o2);
+                            }})
                 .filter(player -> name==null||player.getName().contains(name))
                 .filter(player -> title==null||player.getTitle().contains(title))
                 .filter(player -> race==null||player.getRace()==race)
@@ -58,12 +64,12 @@ public class PlayerController {
                 .skip((long) pageNumber * pageSize)
                 .limit(pageSize)
                 .collect(Collectors.toList());
-
         return new ResponseEntity<>(playerList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id){
+
         if (id>playerService.getCount()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
