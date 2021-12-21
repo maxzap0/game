@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class PlayerService {
@@ -23,7 +24,7 @@ public class PlayerService {
 
     @Transactional
     public Player getPlayerById(Long id) {
-        return playerRepository.findById(id).get();
+        return playerRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional
@@ -35,11 +36,6 @@ public class PlayerService {
     public void deleteById(Long id) {
         playerRepository.deleteById(id);
     }
-
-    /*@Transactional
-    public Integer getCount() {
-        return (int) playerRepository.count();
-    }*/
 
     @Transactional
     public Boolean exists(Long id) {

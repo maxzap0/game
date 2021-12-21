@@ -1,7 +1,5 @@
 package com.game.config;
 
-import com.game.repository.PlayerRepository;
-import com.game.service.PlayerService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

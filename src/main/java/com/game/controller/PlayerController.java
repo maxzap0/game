@@ -136,9 +136,6 @@ public class PlayerController {
         if (!playerService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        /*if (player==null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }*/
 
         if (!PlayerValidCreate.validUpdatePlayer(player)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

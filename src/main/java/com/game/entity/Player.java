@@ -104,10 +104,6 @@ public class Player {
         this.level = level;
     }
 
-    public Integer getUntilNextLevel() {
-        return untilNextLevel;
-    }
-
     public void setUntilNextLevel(Integer untilNextLevel) {
         this.untilNextLevel = untilNextLevel;
     }

@@ -48,11 +48,7 @@ public class PlayerValidCreate {
             return false;
         }
 
-        if ( birthDay!=null && (!birthDay.after(new Date(0)) || !nowDate.after(birthDay))) {
-            return false;
-        }
-
-        return true;
+        return birthDay == null || (birthDay.after(new Date(0)) && nowDate.after(birthDay));
     }
 }
 
