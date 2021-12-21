@@ -5,14 +5,12 @@ import com.game.entity.Player;
 import com.game.entity.Profession;
 import com.game.entity.Race;
 import com.game.service.PlayerService;
+import com.game.validate.PlayerValid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -112,6 +110,22 @@ public class PlayerController {
                 .filter(player -> maxLevel==null||player.getLevel()<=maxLevel)
                 .count();
         return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<Player> createPlayer(
+            @RequestBody Player player) {
+
+        if (!PlayerValid.validCreatePlayer(player)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (!player.getBanned()) {
+            player.setBanned(false);
+        }
+        player.setLevel(((int) (Math.sqrt((2500+(200*player.getExperience())))) - 50) / 100);
+        player.setUntilNextLevel(50 * (player.getLevel()+1)*(player.getLevel()+2) - player.getExperience());
+        playerService.savePlayer(player);
+        return new ResponseEntity<>(player, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
