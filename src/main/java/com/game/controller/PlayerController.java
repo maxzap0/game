@@ -84,9 +84,33 @@ public class PlayerController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> getCount(){
-        Integer count;
-        count = playerService.getCount();
+    public ResponseEntity<Integer> getCount(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Race race,
+            @RequestParam(required = false) Profession profession,
+            @RequestParam(required = false) Long after,
+            @RequestParam(required = false) Long before,
+            @RequestParam(required = false) Boolean banned,
+            @RequestParam(required = false) Integer minExperience,
+            @RequestParam(required = false) Integer maxExperience,
+            @RequestParam(required = false) Integer minLevel,
+            @RequestParam(required = false) Integer maxLevel
+    ){
+        List<Player> playerList = playerService.getAllPlayer();
+        Integer count = (int) playerList.stream()
+                .filter(player -> name==null||player.getName().contains(name))
+                .filter(player -> title==null||player.getTitle().contains(title))
+                .filter(player -> race==null||player.getRace()==race)
+                .filter(player -> profession==null||player.getProfession()==profession)
+                .filter(player -> after==null||player.getBirthday().getTime()>=after)
+                .filter(player -> before==null||player.getBirthday().getTime()<=before)
+                .filter(player -> banned==null||player.getBanned()==banned)
+                .filter(player -> minExperience==null||player.getExperience()>=minExperience)
+                .filter(player -> maxExperience==null||player.getExperience()<=maxExperience)
+                .filter(player -> minLevel==null||player.getLevel()>=minLevel)
+                .filter(player -> maxLevel==null||player.getLevel()<=maxLevel)
+                .count();
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
